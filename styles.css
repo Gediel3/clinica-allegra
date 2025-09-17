@@ -1,0 +1,605 @@
+:root {
+    --primary-color: #007bff; /* Azul primário, pode ser um tom mais vibrante para clínicas */
+    --secondary-color: #f0f8ff; /* Azul claro */
+    --text-color: #333; /* Texto padrão */
+    --heading-color: #1a237e; /* Azul escuro para títulos */
+    --background-light: #ffffff; /* Fundo claro */
+    --background-dark: #f9f9f9; /* Fundo ligeiramente escuro para seções alternadas */
+    --border-color: #ddd; /* Cor de borda */
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra padrão */
+    --whatsapp-color: #25d366; /* Verde do WhatsApp */
+}
+
+/* Reset Básico e Configurações Globais */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* Rolagem suave para links de âncora */
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--background-light);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px; /* Espaçamento lateral */
+}
+
+/* --- HEADER & NAVEGAÇÃO --- */
+.header {
+    background-color: #fff;
+    box-shadow: var(--shadow);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000; /* Garante que o header fique sobre outros elementos */
+    transition: top 0.3s; /* Transição para esconder/mostrar em scroll */
+}
+
+/* Esconder header em scroll para baixo e mostrar em scroll para cima */
+/* Adicionar JS para controlar a classe .scrolled-up ou .scrolled-down se desejar este efeito */
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 20px;
+    min-height: 70px; /* Altura mínima para o header */
+}
+
+.logo {
+    font-size: 1.8rem; /* Fonte maior para o logo */
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase; /* Opcional: para dar mais destaque */
+    display: flex; /* Adicionado para alinhar imagem e texto */
+    align-items: center; /* Centraliza verticalmente */
+    gap: 10px; /* Espaço entre a imagem e o texto */
+}
+
+/* Estilo para a imagem do logo */
+.logo-img {
+    height: 40px; /* Altura da imagem do logo, ajuste conforme necessário */
+    width: auto; /* Mantém a proporção da imagem */
+    /* Você pode adicionar margin-right se preferir controlar o espaçamento manualmente */
+}
+
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--heading-color);
+    font-weight: 600;
+    font-size: 1.1rem; /* Tamanho da fonte para links */
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Botão de menu toggle para mobile */
+.menu-toggle {
+    display: none; /* Escondido por padrão em desktop */
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem; /* Tamanho do ícone de hambúrguer */
+    padding: 5px;
+}
+
+/* Ícone de hambúrguer */
+.menu-icon, .menu-icon::before, .menu-icon::after {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+    position: relative; /* Necessário para posicionar ::before e ::after */
+}
+
+.menu-icon::before, .menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+}
+
+.menu-icon::before {
+    transform: translateY(-8px);
+}
+
+.menu-icon::after {
+    transform: translateY(8px);
+}
+
+/* Animação do ícone de X quando o menu está aberto */
+.menu-toggle.rotate .menu-icon {
+    background-color: transparent; /* Centraliza o "X" */
+}
+
+.menu-toggle.rotate .menu-icon::before {
+    transform: rotate(45deg);
+    top: 0; /* Ajusta o posicionamento vertical */
+}
+
+.menu-toggle.rotate .menu-icon::after {
+    transform: rotate(-45deg);
+    top: 0; /* Ajusta o posicionamento vertical */
+}
+
+
+/* --- HERO SECTION COM IMAGEM BORRADA --- */
+.hero-section {
+    position: relative;
+    min-height: 100vh; /* Altura total da viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding-top: 80px; /* Espaço para o header fixo */
+    overflow: hidden; /* Garante que nada saia da seção */
+}
+
+.hero-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden; /* Corta a imagem se ela exceder os limites */
+}
+
+.hero-image-blurred {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cobre todo o container, pode cortar partes da imagem */
+    filter: blur(8px); /* Nível de desfoque */
+    transform: scale(1.05); /* Pequeno zoom para preencher melhor após o blur */
+    display: block; /* Remove espaço extra abaixo da imagem */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay escuro para melhorar a legibilidade do texto */
+    z-index: -1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.hero-title {
+    font-size: 3.5rem; /* Título maior */
+    color: #fff;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.7); /* Sombra mais pronunciada */
+}
+
+.hero-subtitle {
+    font-size: 1.3rem; /* Subtítulo maior */
+    color: #f0f0f0;
+    margin-bottom: 2.5rem; /* Espaço maior */
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+}
+
+/* Botões em geral */
+.btn {
+    display: inline-flex; /* Permite alinhar ícone e texto */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaço entre ícone e texto */
+    padding: 14px 30px; /* Padding maior para botões mais proeminentes */
+    border-radius: 50px; /* Bordas arredondadas */
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    border: none; /* Remove borda padrão se houver */
+    cursor: pointer; /* Indica que é clicável */
+}
+
+.btn:hover {
+    transform: translateY(-3px); /* Efeito de "levantar" ao passar o mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra mais acentuada no hover */
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background-color: #0056b3; /* Tom mais escuro do azul */
+}
+
+.whatsapp-hero-btn { /* Estilo específico para o botão no hero */
+    background-color: var(--whatsapp-color); /* Cor verde do WhatsApp */
+    font-size: 1.15rem; /* Tamanho da fonte para o botão do WhatsApp */
+}
+
+.whatsapp-hero-btn:hover {
+    background-color: #128c7e; /* Tom mais escuro do verde */
+}
+
+/* --- SEÇÕES GERAIS --- */
+.section {
+    padding: 100px 0; /* Padding maior entre seções */
+}
+
+.section:nth-of-type(even) {
+    background-color: var(--background-dark);
+}
+
+.section-title {
+    font-size: 2.8rem; /* Título de seção maior */
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--heading-color);
+    font-weight: 700;
+}
+
+/* --- SEÇÃO DE SERVIÇOS --- */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem; /* Espaçamento entre os cards */
+    text-align: center;
+}
+
+.service-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Garante que nada saia dos cantos arredondados */
+    display: flex; /* Usa flexbox para organizar conteúdo */
+    flex-direction: column; /* Empilha imagem e info verticalmente */
+}
+
+.service-card:hover {
+    transform: translateY(-10px); /* Efeito de "levantar" o card */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Sombra mais acentuada */
+}
+
+.service-image {
+    width: 100%;
+    height: 220px; /* Altura fixa para imagens de serviço */
+    object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+    display: block; /* Remove espaço extra */
+}
+
+.service-info {
+    padding: 1.5rem;
+    flex-grow: 1; /* Permite que o conteúdo de info ocupe o espaço restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente o conteúdo */
+}
+
+.service-title {
+    font-size: 1.3rem; /* Título de serviço maior */
+    color: var(--primary-color);
+    margin-bottom: 0.8rem; /* Mais espaço abaixo do título */
+    font-weight: 600;
+}
+
+.service-card p {
+    font-size: 0.95rem; /* Tamanho de fonte para descrição */
+    color: var(--text-color);
+}
+
+/* --- SEÇÃO SOBRE MIM --- */
+.about-wrapper {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    align-items: center;
+    gap: 40px; /* Espaço entre imagem e texto */
+}
+
+.about-image {
+    flex: 1;
+    min-width: 280px; /* Largura mínima para a imagem */
+    text-align: center;
+}
+
+.profile-photo {
+    width: 100%;
+    max-width: 380px; /* Tamanho máximo da foto do profissional */
+    border-radius: 10px; /* Bordas arredondadas */
+    box-shadow: var(--shadow);
+    border: 5px solid #fff; /* Borda branca para destacar */
+}
+
+.about-content {
+    flex: 2; /* Permite que o conteúdo ocupe mais espaço */
+    min-width: 300px; /* Largura mínima para o conteúdo */
+}
+
+.about-content p {
+    font-size: 1.1rem; /* Tamanho de fonte para o parágrafo */
+    text-align: justify; /* Justifica o texto para uma aparência mais organizada */
+}
+
+/* --- SEÇÃO DE ENDEREÇO --- */
+.address-section {
+    text-align: center;
+    background-color: var(--background-light); /* Cor de fundo específica */
+}
+
+.address-text {
+    font-size: 1.3rem; /* Tamanho maior para o endereço */
+    margin-bottom: 2rem;
+    color: var(--heading-color);
+    font-weight: 600;
+}
+
+.map-container {
+    width: 100%;
+    max-width: 800px; /* Largura máxima para o mapa */
+    margin: 0 auto; /* Centraliza o container */
+    border-radius: 10px;
+    overflow: hidden; /* Garante que o iframe não saia */
+    box-shadow: var(--shadow);
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 450px;
+    display: block; /* Remove espaço extra abaixo do iframe */
+    border: none; /* Remove borda padrão do iframe */
+}
+
+/* --- SEÇÃO DE CONTATO --- */
+.contact-section {
+    text-align: center;
+}
+
+.contact-subtitle {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 2rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.whatsapp-btn {
+    background-color: var(--whatsapp-color);
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 1.2rem; /* Tamanho de fonte um pouco maior */
+}
+
+.whatsapp-btn:hover {
+    background-color: #128c7e; /* Tom mais escuro do verde */
+}
+
+.whatsapp-btn i {
+    font-size: 1.3rem; /* Tamanho do ícone do WhatsApp */
+    margin-right: 10px; /* Espaço entre o ícone e o texto */
+}
+
+/* --- FOOTER --- */
+.footer {
+    background-color: var(--heading-color);
+    color: #fff;
+    text-align: center;
+    padding: 2.5rem 0; /* Padding maior no footer */
+    font-size: 1rem; /* Tamanho de fonte padrão */
+}
+
+/* --- BOTÃO FLUTUANTE DO WHATSAPP --- */
+.whatsapp-float-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 65px; /* Um pouco maior para facilitar o toque */
+    height: 65px;
+    background-color: var(--whatsapp-color);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem; /* Ícone maior */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra mais acentuada */
+    z-index: 100;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp-float-btn:hover {
+    transform: scale(1.15); /* Efeito de "pulsar" */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* --- RESPONSIVIDADE PARA CELULARES E TABLETS --- */
+
+@media (max-width: 1024px) {
+    .hero-title {
+        font-size: 3rem; /* Reduz título em telas menores */
+    }
+    .hero-subtitle {
+        font-size: 1.15rem;
+    }
+    .section-title {
+        font-size: 2.3rem;
+        margin-bottom: 3rem;
+    }
+    .btn {
+        padding: 12px 24px; /* Padding ligeiramente menor */
+    }
+    .logo-img {
+        height: 35px; /* Ajusta o tamanho do logo em tablets */
+    }
+    .logo {
+        font-size: 1.6rem; /* Ajusta o tamanho da fonte do logo em tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    /* Menu Mobile */
+    .nav-links {
+        position: fixed;
+        right: 0;
+        top: 60px; /* Ajustado para baixo do header fixo */
+        background-color: #ffffff; /* Fundo branco para o menu */
+        height: 100vh; /* Ocupa toda a altura */
+        width: 70%; /* Largura do menu em mobile */
+        flex-direction: column;
+        align-items: center;
+        padding-top: 40px; /* Espaço no topo do menu */
+        transform: translateX(100%); /* Começa escondido à direita */
+        transition: transform 0.5s ease-in-out;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.1); /* Sombra lateral */
+    }
+
+    .nav-links.nav-active {
+        transform: translateX(0); /* Mostra o menu */
+    }
+    
+    .nav-links li {
+        opacity: 0; /* Começa transparente */
+        margin: 15px 0; /* Espaçamento vertical */
+        font-size: 1.1rem; /* Tamanho da fonte no menu mobile */
+    }
+    
+    .nav-links.nav-active li {
+        opacity: 1; /* Torna visível */
+        transition: opacity 0.5s ease-in-out 0.3s; /* Delay para animação de fade-in */
+    }
+
+    .menu-toggle {
+        display: block; /* Mostra o botão do menu */
+        z-index: 101; /* Garante que o botão fique sobre o menu */
+    }
+
+    .nav-links a {
+        color: var(--heading-color); /* Cor do texto do menu */
+    }
+    
+    /* Hero Section em Mobile */
+    .hero-section {
+        padding-top: 60px; /* Reduz o padding superior */
+    }
+
+    .hero-title {
+        font-size: 2.5rem; /* Título bem menor em mobile */
+    }
+
+    .hero-subtitle {
+        font-size: 1rem; /* Subtítulo menor */
+        margin-bottom: 2rem;
+    }
+
+    .whatsapp-hero-btn {
+        padding: 12px 20px; /* Botão menor */
+        font-size: 1rem;
+    }
+
+    /* Seção Sobre Mim */
+    .about-wrapper {
+        flex-direction: column; /* Empilha os itens verticalmente */
+        text-align: center;
+    }
+    
+    .about-image {
+        order: 1; /* Imagem aparece primeiro */
+        margin-bottom: 30px; /* Espaço abaixo da imagem */
+    }
+    
+    .about-content {
+        order: 2; /* Conteúdo aparece depois */
+        text-align: center; /* Centraliza texto */
+    }
+    
+    .about-content p {
+        text-align: left; /* Volta para alinhamento à esquerda para melhor leitura em mobile */
+    }
+
+    /* Seções em geral */
+    .section {
+        padding: 60px 0; /* Padding reduzido em mobile */
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Cards de Serviço */
+    .services-grid {
+        grid-template-columns: 1fr; /* Um card por linha em mobile */
+    }
+
+    .service-card {
+        max-width: 350px; /* Limita a largura dos cards em telas menores */
+        margin: 0 auto; /* Centraliza cards individuais */
+    }
+
+    /* Botão Flutuante */
+    .whatsapp-float-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 1.8rem;
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .logo-img {
+        height: 30px; /* Ajusta o tamanho do logo em mobile */
+    }
+    .logo {
+        font-size: 1.5rem; /* Ajusta o tamanho da fonte do logo em mobile */
+        gap: 8px;
+    }
+}
+
+/* Estilos para telas muito pequenas, se necessário */
+@media (max-width: 360px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    .whatsapp-hero-btn {
+        font-size: 0.9rem;
+        padding: 10px 18px;
+    }
+    .nav-links {
+        width: 85%; /* Menu ocupa mais espaço em telas muito pequenas */
+    }
+    .logo-img {
+        height: 25px; /* Ajusta o tamanho do logo em telas muito pequenas */
+    }
+    .logo {
+        font-size: 1.3rem; /* Ajusta o tamanho da fonte do logo em telas muito pequenas */
+    }
+}
