@@ -1,255 +1,226 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Aviator - Painel da Casa (Mobile)</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Aviator</title>
   <style>
-    /* --- Reset & base --- */
-    :root{
-      --bg:#0f1724; --card:#0b1220; --accent:#00d1b2; --muted:#94a3b8; --glass: rgba(255,255,255,0.03);
-      --danger:#ff6b6b; --success:#5eead4;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:linear-gradient(180deg,#071028 0%, #081428 60%); color:#e6eef6; -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale; padding:12px; font-size:14px;
+    header {
+      padding: 20px;
+      background: #161b22;
+      font-size: 24px;
+      font-weight: bold;
     }
-    /* --- App shell --- */
-    .app{max-width:420px;margin:0 auto}
-    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-    .brand{display:flex;flex-direction:column}
-    h1{font-size:18px;margin:0}
-    p.sub{margin:0;color:var(--muted);font-size:12px}
-    /* --- Cards --- */
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px;padding:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
-    .row{display:flex;gap:10px}
-    .sp{flex:1}
-    .big-num{font-size:22px;font-weight:700}
-    .small{color:var(--muted);font-size:12px}
-    /* --- Live round --- */
-    .live{display:flex;flex-direction:column;gap:8px}
-    .status{display:flex;justify-content:space-between;align-items:center}
-    .pill{padding:6px 10px;border-radius:999px;background:var(--glass);font-weight:600}
-    .controls{display:flex;gap:8px;margin-top:6px}
-    button{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;color:inherit;font-weight:600}
-    button.primary{background:linear-gradient(90deg,var(--accent),#00bfa1);color:#012; border:none}
-    button.ghost{background:transparent}
-    /* --- list --- */
-    .history{margin-top:12px;display:grid;gap:8px}
-    .round-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02)}
-    .round-left{display:flex;flex-direction:column}
-    .round-meta{font-size:12px;color:var(--muted)}
-    .profit-pos{color:var(--success);font-weight:700}
-    .profit-neg{color:var(--danger);font-weight:700}
-    /* --- footer nav --- */
-    nav{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:420px;max-width:95%;display:flex;gap:8px}
-    .nav-btn{flex:1;padding:10px;border-radius:999px;background:rgba(0,0,0,0.45);text-align:center;color:var(--muted);font-weight:700}
-    .hidden{display:none}
-    /* responsive tweaks */
-    @media (max-width:420px){.app{padding:0 6px}} 
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .card {
+      background: #21262d;
+      padding: 20px;
+      border-radius: 12px;
+      width: 220px;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+    .profit { color: #4caf50; }
+    .loss { color: #f44336; }
+
+    .aviator-img {
+      margin: 20px auto;
+      width: 120px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #238636;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #2ea043; }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: #161b22;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    table th, table td {
+      border: 1px solid #30363d;
+      padding: 10px;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #161b22;
+      padding: 30px;
+      border-radius: 12px;
+      width: 400px;
+      text-align: center;
+    }
+    .progress-container {
+      background: #30363d;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    .progress-bar {
+      background: #238636;
+      height: 20px;
+      width: 0%;
+      transition: width 1s linear;
+    }
+    .time-remaining {
+      margin-top: 10px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#00897b);display:flex;align-items:center;justify-content:center;font-weight:800;color:#012">AV</div>
-      <div class="brand">
-        <h1>Aviator - Painel da Casa</h1>
-        <p class="sub">Mostra lucro, perda e histórico de rodadas</p>
+  <header>Painel Aviator</header>
+
+  <div class="aviator-img">
+    ✈️
+  </div>
+
+  <div class="stats">
+    <div class="card">
+      <h3>Total Apostado</h3>
+      <p id="totalApostado">R$ 0,00</p>
+    </div>
+    <div class="card">
+      <h3>Total Pago</h3>
+      <p id="totalPago">R$ 0,00</p>
+    </div>
+    <div class="card">
+      <h3>Lucro/Prejuízo</h3>
+      <p id="lucroCasa">R$ 0,00</p>
+    </div>
+  </div>
+
+  <h2>Rodadas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rodada</th>
+        <th>Total Apostado</th>
+        <th>Total Pago</th>
+        <th>Lucro da Casa</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaRodadas"></tbody>
+  </table>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Adicionando o Web Scraping</h2>
+      <p>Aguarde o tempo de 30 dias...</p>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
       </div>
-    </header>
-
-    <!-- Live card -->
-    <section class="card live" id="liveCard">
-      <div class="status">
-        <div>
-          <div class="small">Rodada atual</div>
-          <div class="big-num" id="roundMultiplier">—</div>
-        </div>
-        <div style="text-align:right">
-          <div class="small">Casa (lucro/perda)</div>
-          <div id="roundProfit" class="big-num">R$ 0,00</div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="card sp" style="padding:8px">
-          <div class="small">Total apostas</div>
-          <div id="totalBets" class="big-num">R$ 0,00</div>
-        </div>
-        <div class="card" style="padding:8px;width:120px;display:flex;flex-direction:column;justify-content:center;align-items:center">
-          <div class="small">Rodada</div>
-          <div id="roundId" class="big-num">#000</div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button class="ghost" id="btnSimulate">Simular rodada</button>
-        <button class="primary" id="btnClose">Fechar rodada</button>
-      </div>
-
-      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;justify-content:space-between">
-        <div class="small">Últimos: <span id="lastMultipliers">—</span></div>
-        <div class="small">Saldo da casa: <strong id="houseBalance">R$ 0,00</strong></div>
-      </div>
-    </section>
-
-    <!-- Chart -->
-    <section class="card" style="margin-top:12px">
-      <div class="small">Gráfico: lucro/perda (últimas 10 rodadas)</div>
-      <canvas id="profitChart" style="width:100%;height:160px;margin-top:8px"></canvas>
-    </section>
-
-    <!-- History -->
-    <section class="card history" id="historySection" style="margin-top:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="small">Rodadas anteriores</div>
-        <div class="small">Total: <span id="totalRounds">0</span></div>
-      </div>
-      <div id="historyList"></div>
-    </section>
-
-    <!-- footer nav -->
-    <nav>
-      <div class="nav-btn" id="navOverview">Visão</div>
-      <div class="nav-btn" id="navHistory">Histórico</div>
-      <div class="nav-btn" id="navSettings">Config</div>
-    </nav>
+      <div class="time-remaining" id="timeRemaining"></div>
+    </div>
   </div>
 
   <script>
-    /* ------------------ Utility ------------------ */
-    const fmt = (n)=>{
-      const sign = n<0?'-':''; n = Math.abs(n);
-      return sign + 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
-    }
-    const nowId = ()=>'r'+Date.now();
+    // ===== Dados Painel Aviator (simulação para testes) =====
+    let rodada = 0;
+    let totalApostado = 0;
+    let totalPago = 0;
 
-    /* ------------------ State ------------------ */
-    let live = {id: nowId(), multiplier: null, totalBets:0, houseProfit:0};
-    let rounds = JSON.parse(localStorage.getItem('aviator_rounds_v1')||'[]');
-    let houseBalance = parseFloat(localStorage.getItem('aviator_house_balance')||'0');
-
-    /* ------------------ DOM refs ------------------ */
-    const roundMultiplier = document.getElementById('roundMultiplier');
-    const totalBetsEl = document.getElementById('totalBets');
-    const roundProfit = document.getElementById('roundProfit');
-    const roundIdEl = document.getElementById('roundId');
-    const lastMultipliers = document.getElementById('lastMultipliers');
-    const houseBalanceEl = document.getElementById('houseBalance');
-    const historyList = document.getElementById('historyList');
-    const totalRoundsEl = document.getElementById('totalRounds');
-
-    /* ------------------ Chart ------------------ */
-    const ctx = document.getElementById('profitChart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {labels: [], datasets:[{label:'Lucro/Prejuízo (R$)', data:[],} ]},
-      options:{scales:{y:{beginAtZero:false}},plugins:{legend:{display:false}}}
-    });
-
-    /* ------------------ Render ------------------ */
-    function renderLive(){
-      roundIdEl.textContent = live.id.slice(-6);
-      roundMultiplier.textContent = live.multiplier ? (live.multiplier+'x') : '—';
-      totalBetsEl.textContent = fmt(live.totalBets);
-      roundProfit.textContent = fmt(live.houseProfit);
-      roundProfit.className = live.houseProfit>=0? 'big-num profit-pos' : 'big-num profit-neg';
-      houseBalanceEl.textContent = fmt(houseBalance);
-      lastMultipliers.textContent = rounds.slice(0,5).map(r=>r.multiplier+'x').join(' • ') || '—';
+    function formatar(valor){
+      return valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     }
 
-    function renderHistory(){
-      historyList.innerHTML = '';
-      totalRoundsEl.textContent = rounds.length;
-      const frag = document.createDocumentFragment();
-      rounds.slice().reverse().forEach(r=>{
-        const item = document.createElement('div'); item.className='round-item';
-        const left = document.createElement('div'); left.className='round-left';
-        left.innerHTML = `<div style="font-weight:700">#${r.id.slice(-6)} — ${r.multiplier}x</div><div class="round-meta">${new Date(r.closedAt).toLocaleString()}</div>`;
-        const right = document.createElement('div');
-        const prof = document.createElement('div'); prof.textContent = fmt(r.houseProfit); prof.className = r.houseProfit>=0? 'profit-pos' : 'profit-neg';
-        right.appendChild(prof);
-        item.appendChild(left); item.appendChild(right);
-        frag.appendChild(item);
-      });
-      historyList.appendChild(frag);
+    function novaRodada(){
+      rodada++;
+      let aposta = Math.floor(Math.random()*1000)+100;
+      let pago = Math.floor(Math.random()*1000);
+      totalApostado += aposta;
+      totalPago += pago;
+      let lucro = aposta - pago;
 
-      // update chart
-      const last = rounds.slice(-10);
-      chart.data.labels = last.map(r=>r.id.slice(-4));
-      chart.data.datasets[0].data = last.map(r=>r.houseProfit);
-      chart.update();
+      document.getElementById('totalApostado').innerText = formatar(totalApostado);
+      document.getElementById('totalPago').innerText = formatar(totalPago);
+      document.getElementById('lucroCasa').innerText = formatar(totalApostado - totalPago);
+
+      let linha = `<tr>
+        <td>${rodada}</td>
+        <td>${formatar(aposta)}</td>
+        <td>${formatar(pago)}</td>
+        <td style="color:${lucro>=0?'#4caf50':'#f44336'}">${formatar(lucro)}</td>
+      </tr>`;
+      document.getElementById('tabelaRodadas').innerHTML += linha;
     }
 
-    /* ------------------ Actions ------------------ */
-    function simulateRound(){
-      // picks a multiplier distribution biased to low multipliers
-      const m = (Math.random()*10).toFixed(2); // simple sim: 0.00 - 10.00
-      // total bets random between 200 and 8000
-      const totalBets = Math.round((200 + Math.random()*7800));
-      // houseProfit = totalBets - payouts. payouts = sum of bets * multiplier winners share.
-      // simple: assume house pays a percentage based on multiplier
-      const payoutRate = Math.min(m/20, 0.95); // higher multiplier => more payout proportion
-      const payouts = Math.round(totalBets * payoutRate);
-      const houseProfitVal = totalBets - payouts;
-      live.multiplier = parseFloat(m);
-      live.totalBets = totalBets;
-      live.houseProfit = houseProfitVal;
-      renderLive();
+    // ===== Modal com Barra de Progresso (30 dias reais) =====
+    const modal = document.getElementById('modal');
+    const progressBar = document.getElementById('progressBar');
+    const timeRemaining = document.getElementById('timeRemaining');
+
+    const TOTAL_MS = 30 * 24 * 60 * 60 * 1000; // 30 dias em ms
+
+    let startTime = localStorage.getItem('aviatorStart');
+    if(!startTime){
+      startTime = Date.now();
+      localStorage.setItem('aviatorStart', startTime);
     }
 
-    function closeRound(){
-      if(live.multiplier===null) { alert('Nenhuma rodada ativa — simule primeiro.'); return; }
-      const closed = {
-        id: live.id,
-        multiplier: live.multiplier,
-        totalBets: live.totalBets,
-        houseProfit: live.houseProfit,
-        closedAt: Date.now()
-      };
-      rounds.push(closed);
-      // persist
-      localStorage.setItem('aviator_rounds_v1', JSON.stringify(rounds));
-      houseBalance += closed.houseProfit; localStorage.setItem('aviator_house_balance', houseBalance);
-      // reset live for next
-      live = {id: nowId(), multiplier:null, totalBets:0, houseProfit:0};
-      renderLive(); renderHistory();
+    function atualizarProgresso(){
+      let agora = Date.now();
+      let passado = agora - startTime;
+      let progresso = Math.min((passado / TOTAL_MS) * 100, 100);
+      progressBar.style.width = progresso + '%';
+
+      let restante = TOTAL_MS - passado;
+      if(restante < 0) restante = 0;
+
+      let dias = Math.floor(restante / (1000*60*60*24));
+      let horas = Math.floor((restante % (1000*60*60*24)) / (1000*60*60));
+      let minutos = Math.floor((restante % (1000*60*60)) / (1000*60));
+      let segundos = Math.floor((restante % (1000*60)) / 1000);
+
+      timeRemaining.innerText = `Restante: ${dias}d ${horas}h ${minutos}m ${segundos}s`;
+
+      // Exibir no console o tempo salvo e atualizado
+      console.log(`Início: ${new Date(parseInt(startTime))}`);
+      console.log(`Restante: ${dias}d ${horas}h ${minutos}m ${segundos}s`);
+
+      if(progresso >= 100){
+        modal.style.display = 'none';
+        console.log("⏱️ 30 dias concluídos!");
+      }
     }
 
-    /* ------------------ Wire buttons ------------------ */
-    document.getElementById('btnSimulate').addEventListener('click', ()=>{ simulateRound(); });
-    document.getElementById('btnClose').addEventListener('click', ()=>{ closeRound(); });
-
-    // nav
-    document.getElementById('navOverview').addEventListener('click', ()=>{ document.getElementById('historySection').scrollIntoView({behavior:'smooth'}); });
-    document.getElementById('navHistory').addEventListener('click', ()=>{ document.getElementById('historySection').scrollIntoView({behavior:'smooth'}); });
-    document.getElementById('navSettings').addEventListener('click', ()=>{ alert('Configuração: para conectar com scraping, configure um endpoint /api/rounds que envie JSON com a rodada (veja comentários no código).'); });
-
-    /* ------------------ Init ------------------ */
-    renderLive(); renderHistory();
-
-    /* ------------------ Integration notes (client-side) ------------------ */
-    /*
-      Para integrar com dados reais da Superbet (scraping) você precisa:
-      1) Um script servidor (Node/Python) que faça scraping ou use a API privada do provedor.
-      2) Expor um endpoint JSON (ex: POST /api/rounds) que envie um objeto com o formato:
-         {
-           id: 'r12345', multiplier: 3.42, totalBets: 4500, houseProfit: -2300, closedAt: 169... 
-         }
-      3) Este app pode consumir o endpoint via fetch() ou através de WebSocket para atualizações em tempo real.
-      Exemplo de recepção (simples):
-        fetch('/api/rounds/latest').then(r=>r.json()).then(obj=>{
-           // obj é a rodada, adicionar a rounds e atualizar a UI
-        })
-
-      Observação de segurança: o scraping de sites pode violar termos de serviço. Execute apenas em ambientes de teste e com responsabilidade.
-    */
-
+    setInterval(atualizarProgresso, 1000);
+    atualizarProgresso();
   </script>
 </body>
 </html>
